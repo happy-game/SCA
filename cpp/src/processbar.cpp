@@ -85,7 +85,7 @@ void ProcessBar::update(int items) {
     this->used_time = time(nullptr) - this->start_time;
     this->remain_time = (int)(this->used_time / this->percent - this->used_time);
     this->speed = (float)(this->processed) / (time(nullptr) - this->start_time);
-    if (time(nullptr) - this->last_time >= this->update_interval || this->percent - this->last_percent >= 0.01
+    if (time(nullptr) - this->last_time >= this->update_interval || this->percent - this->last_percent >= 0.01) {
         this->display(this->position);
         this->last_time = time(nullptr);
     }
