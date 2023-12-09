@@ -1,18 +1,23 @@
-#include <iostream>
-#include <Eigen/Dense>
-#include <boost/math/constants/constants.hpp>
+#include "processbar.hpp"
+#include <unistd.h>
 
 using namespace std;
-
-int main(int argc, char** argv) {
-    Eigen::MatrixXd m(2,2);
-    m(0,0) = 3;
-    m(1,0) = 2.5;
-    m(0,1) = -1;
-    m(1,1) = m(1,0) + m(0,1);
-    cout << m << endl;
-
-    cout << "Hello, world!" << endl;
-    cout << "pi: " << boost::math::constants::pi<double>() << endl;
-    return 0;
+int main(int argc, char* argv[]) {
+    ProcessBar* pb1 = new ProcessBar(100, 0, 100, "Processing1", '#', '.');
+    for (int i = 0; i < 100; i++) {
+        ProcessBar* pb2 = new ProcessBar(100, 1, 100, "Processing2", '#', '.');
+        for (int j = 0; j < 100; j++) {
+            pb2->update(1);
+            sleep(1);
+        }
+        pb2->finish();
+        delete pb2;
+        pb1->update(1);
+    }
+    ProcessBar* pb = new ProcessBar(100, 0, 100, "Processing", '#', '.');
+    for (int i = 0; i < 100; i++) {
+        pb->update(1);
+        sleep(0.1);
+    }
+    pb->finish();
 }
