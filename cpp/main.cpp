@@ -1,23 +1,17 @@
 #include "processbar.hpp"
+#include "dataProcess.hpp"
 #include <unistd.h>
 
 using namespace std;
 int main(int argc, char* argv[]) {
-    ProcessBar* pb1 = new ProcessBar(100, 0, 100, "Processing1", '#', '.');
-    for (int i = 0; i < 100; i++) {
-        ProcessBar* pb2 = new ProcessBar(100, 1, 100, "Processing2", '#', '.');
-        for (int j = 0; j < 100; j++) {
-            pb2->update(1);
-            sleep(1);
-        }
-        pb2->finish();
-        delete pb2;
-        pb1->update(1);
-    }
-    ProcessBar* pb = new ProcessBar(100, 0, 100, "Processing", '#', '.');
-    for (int i = 0; i < 100; i++) {
-        pb->update(1);
-        sleep(0.1);
-    }
-    pb->finish();
+    // print pwd
+    char pwd[100];
+    getcwd(pwd, sizeof(pwd));
+    cout << "pwd: " << pwd << endl;
+    char *in_name = "wave.txt";
+    char *out_name = "wave";
+    uint8_t dtype = INT32;
+    uint8_t base = 16;
+    txt2bin(in_name, out_name, dtype, base);
+    return 0;
 }

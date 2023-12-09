@@ -18,6 +18,7 @@ ProcessBar::ProcessBar(int total, int position, int width, const char* title, ch
     this->start_time = time(nullptr);
     this->last_items = 0;
     this->last_time = this->start_time;
+    this->last_percent = 0.0;
     this->update_interval = 1;
 
     // 获取当前终端行数和列数
@@ -29,7 +30,7 @@ ProcessBar::ProcessBar(int total, int position, int width, const char* title, ch
     }
     this->position = size.ws_row - position;
     this->display_str = new char[this->width + 1];
-    this->update_interval = 2;  // 更新间隔 1s
+    this->update_interval = 1;  // 更新间隔 1s
 
    this->display(this->position);
 
@@ -84,7 +85,7 @@ void ProcessBar::update(int items) {
     this->used_time = time(nullptr) - this->start_time;
     this->remain_time = (int)(this->used_time / this->percent - this->used_time);
     this->speed = (float)(this->processed) / (time(nullptr) - this->start_time);
-    if (time(nullptr) - this->last_time >= this->update_interval) {
+    if (time(nullptr) - this->last_time >= this->update_interval || this->percent - this->last_percent >= 0.01
         this->display(this->position);
         this->last_time = time(nullptr);
     }

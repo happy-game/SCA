@@ -42,6 +42,7 @@ private:
     uint64_t last_items;    // 上一次更新的items
     time_t last_time;   // 上一次更新的时间
     time_t update_interval; // 更新间隔
+    float last_percent; // 上一次更新的百分比
 };
 
 #endif //PROCESSBAR_HPP

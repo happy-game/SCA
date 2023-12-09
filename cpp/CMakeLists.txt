@@ -15,5 +15,7 @@ add_executable(sca main.cpp
         src/cpa.cpp
         include/cpa.hpp
         include/processbar.hpp
-        src/processbar.cpp)
+        src/processbar.cpp
+        src/dataProcess.cpp
+        include/dataProcess.hpp)
 target_link_libraries(sca ${GSL_LIBRARIES})
