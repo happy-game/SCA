@@ -37,22 +37,21 @@ bool txt2bin(const char *in_name, const char *out_name, uint8_t dtype, uint8_t b
     infile.open(in_name);
     char *real_out_name = new char[strlen(out_name) + 100]; // real out name = {out_name}_{dtype}_{one_line_num}_{lines}.bin
     sprintf(real_out_name, "%s_%d_%08d_%08d.bin", out_name, dtype, one_line_num, lines);
-    cout << "real_out_name: " << real_out_name << endl;
     std::ofstream outfile(real_out_name, std::ios::binary);
 
     uint8_t dtype_size[] = {1, 2, 4, 8, 4, 8};
 
-//    void *read_buffer = malloc(one_line_num * dtype_size[dtype]);
-//    void *write_buffer = malloc(one_line_num * dtype_size[dtype]);
-
-    uint8_t *read_buffer = new uint8_t[one_line_num * dtype_size[dtype]];
-    uint8_t *write_buffer = new uint8_t[one_line_num * dtype_size[dtype]];
+//    uint64_t buffer_size = one_line_num * dtype_size[dtype];
+    uint64_t buffer_size = 1024 * 1024 * dtype_size[dtype];
+    auto *read_buffer = new uint8_t[buffer_size];
+    auto *write_buffer = new uint8_t[buffer_size];
 
     // create a thread to write file
     std::thread *t = nullptr;   // write file thread
 
+    int j = 0;
     while (std::getline(infile, line)) {    // read one line
-        memset(read_buffer, 0, one_line_num * dtype_size[dtype]);   // clear buffer
+//        memset(read_buffer, 0, one_line_num * dtype_size[dtype]);   // clear buffer
         char *p = line.data();
         char *q = p;
         size_t len = line.length();
@@ -62,42 +61,52 @@ bool txt2bin(const char *in_name, const char *out_name, uint8_t dtype, uint8_t b
             } else {
                 q = strchr(p, ' ');
             }
+//            int16_t tmp = (int16_t)strtol(p, &q, base);
             switch (dtype) {
                 case INT8:
-                    ((int8_t *)read_buffer)[i] = (int8_t)strtol(p, &q, base);
+                    ((int8_t *)read_buffer)[j] = (int8_t)strtol(p, &q, base);
                     break;
                 case INT16:
-                    ((int16_t *)read_buffer)[i] = (int16_t)strtol(p, &q, base);
+                    ((int16_t *)read_buffer)[j] = (int16_t)strtol(p, &q, base);
                     break;
                 case INT32:
-                    ((int32_t *)read_buffer)[i] = (int32_t)strtol(p, &q, base);
+                    ((int32_t *)read_buffer)[j] = (int32_t)strtol(p, &q, base);
                     break;
                 case INT64:
-                    ((int64_t *)read_buffer)[i] = (int64_t)strtol(p, &q, base);
+                    ((int64_t *)read_buffer)[j] = (int64_t)strtol(p, &q, base);
                     break;
                 case FLOAT32:
-                    ((float *)read_buffer)[i] = strtof(p, &q);
+                    ((float *)read_buffer)[j] = strtof(p, &q);
                     break;
                 case FLOAT64:
-                    ((double *)read_buffer)[i] = strtod(p, &q);
+                    ((double *)read_buffer)[j] = strtod(p, &q);
                     break;
                 default:
                     break;
             }
             p = q + 1;
             q = p;
+            j++;
         }
         pb.update(len + 1);
+        if (j == one_line_num || infile.eof()) {
+//            j = 0;
+        }
+        else{
+            continue;   // not enough data to write
+        }
         void *tmp = read_buffer;
         read_buffer = write_buffer;
         write_buffer = (uint8_t *)tmp;
-//        write_file(&outfile, (char *)write_buffer, one_line_num * dtype_size[dtype]);
-        if (t != nullptr) { // wait for thread
-            t->join();
-            delete t;
-        }
-        t = new std::thread(write_file, &outfile, (char *)write_buffer, one_line_num * dtype_size[dtype]);
-////        t->detach();    // detach thread
+        write_file(&outfile, (char *)write_buffer, j * dtype_size[dtype]);
+        memset(write_buffer, 0, one_line_num * dtype_size[dtype]);
+        j = 0;
+//        if (t != nullptr) { // wait for thread
+//            t->join();
+//            delete t;
+//        }
+//        t = new std::thread(write_file, &outfile, (char *)write_buffer, one_line_num * dtype_size[dtype]);
+//        t->detach();    // detach thread
     }
     pb.finish();
     infile.close();

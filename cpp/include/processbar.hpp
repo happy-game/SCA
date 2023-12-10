@@ -16,8 +16,8 @@ public:
     ~ProcessBar();  // 析构函数
     void update(int items);   // 更新进度条
     void finish();  // 完成进度条
-    void display(int position); // 显示进度条
-    void time_stamp2str(time_t time_stamp, char* str); // 时间戳转字符串
+    void display(int poso); // 显示进度条
+    static void time_stamp2str(time_t time_stamp, char* str); // 时间戳转字符串
     friend std::ostream& operator<<(std::ostream& os, const ProcessBar& pb); // 重载输出流
 private:
     uint64_t total;  // 总数
