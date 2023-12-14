@@ -20,7 +20,7 @@
 #define FLOAT32 4
 #define FLOAT64 5
 
-template <typename MatrixT>
+//template <typename MatrixT>
 bool txt2bin(const char *in_name, const char *out_name, uint8_t dtype, uint8_t base);  // load data from txt file
 bool matrix2txt(const char *filename, Eigen::MatrixXf *matrix); // save data to txt file
 bool matrix2bin(const char *filename, Eigen::MatrixXf *matrix); // save data to bin file

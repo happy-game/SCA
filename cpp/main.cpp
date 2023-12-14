@@ -15,27 +15,11 @@ using namespace std;
 
 
 int main(int argc, char* argv[]) {
-    Tables::clear();
-    Tables tables;
-    cout << "hw_table \n";
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 16;j++) {
-            cout << (int)tables.hw_table[i * 16 + j] << " ";
-        }
-        cout << endl;
+    int succ = txt2bin("plain.txt", "plain2.bin", INT8, 10);
+    if (succ) {
+        cout << "success" << endl;
+    } else {
+        cout << "fail" << endl;
     }
-    cout << "hd_table \n";
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 256;j++) {
-            cout << (int)tables.hd_table[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << "g_table \n";
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 9;j++) {
-            cout << (int)tables.g_table[i][j] << " ";
-        }
-        cout << endl;
-    }
+    return 0;
 }
