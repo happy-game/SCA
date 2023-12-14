@@ -2,31 +2,40 @@
 #include "dataProcess.hpp"
 #include <unistd.h>
 #include <chrono>
+#include <Eigen/Dense>
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/reader.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include "tables.hpp"
+
 
 using namespace std;
+
+
 int main(int argc, char* argv[]) {
-//    char *in_name = "wave.txt";
-//    char *out_name = "wave";
-//
-//
-//    auto start = chrono::steady_clock::now();
-//    for(int i = 0; i<10;i++){
-//        cout << "i = " << i << endl;
-//        txt2bin(in_name, out_name, INT16, 16);
-//    }
-//    auto end = chrono::steady_clock::now();
-//
-//    cout << "Time used: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() / 10 << " ms" << endl;
-
-    char *in_name2 = "plain.txt";
-    char *out_name2 = "plain";
-
-    auto start2 = chrono::steady_clock::now();
-    for(int i = 0; i<10;i++){
-        cout << "i = " << i << endl;
-        txt2bin(in_name2, out_name2, INT16, 16);
+    Tables::clear();
+    Tables tables;
+    cout << "hw_table \n";
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16;j++) {
+            cout << (int)tables.hw_table[i * 16 + j] << " ";
+        }
+        cout << endl;
     }
-    auto end2 = chrono::steady_clock::now();
-
-    cout << "Time used: " << chrono::duration_cast<chrono::milliseconds>(end2 - start2).count() / 10 << " ms" << endl;
+    cout << "hd_table \n";
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 256;j++) {
+            cout << (int)tables.hd_table[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << "g_table \n";
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 9;j++) {
+            cout << (int)tables.g_table[i][j] << " ";
+        }
+        cout << endl;
+    }
 }
